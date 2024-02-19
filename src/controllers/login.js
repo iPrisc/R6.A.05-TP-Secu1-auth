@@ -15,11 +15,30 @@ export const addUser = async (req, res) => {
         })
     }
 
-    // A compléter
+    const newUser = {
+        email,
+        password: hashedPassword,
+        role: 'utilisateur'
+    };
+
+    users.push(newUser);
+
 }
 
 export const loginUser = async function (req, res) {
+    const { email, password } = req.body;
 
-    // A compléter
+    const user = users.find((u) => u.email === email);
 
+    if (!user) {
+        return res.status(401).send({ message: "Utilisateur non trouvé" });
+    }
+
+    if (user.password !== hashedPassword) {
+        return res.status(401).send({ message: "Mot de passe incorrect" });
+    }
+
+    const token = generateJWT(user);
+
+    res.status(200).send({ token });
 }
